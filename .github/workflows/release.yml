@@ -43,6 +43,7 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
+        if: ${{ hashFiles('.changeset/**') != '' }}
         with:
           version: bun run version
           publish: bun run publish-packages
