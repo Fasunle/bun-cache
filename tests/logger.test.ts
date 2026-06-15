@@ -57,7 +57,7 @@ describe('Logger', () => {
     it('should log layer header with correct information', () => {
       Logger.layerHeader(1, 3, 5);
       expect(consoleLogSpy).toHaveBeenCalledTimes(3);
-      const calls = consoleLogSpy.mock.calls.map(c => c[0]);
+      const calls = consoleLogSpy.mock.calls.map((c: string[]) => c[0]);
       expect(calls[0]).toContain('─');
       expect(calls[1]).toContain('📍');
       expect(calls[1]).toContain('Layer 1/3');
@@ -67,20 +67,20 @@ describe('Logger', () => {
 
     it('should log final layer', () => {
       Logger.layerHeader(3, 3, 2);
-      const calls = consoleLogSpy.mock.calls.map(c => c[0]);
+      const calls = consoleLogSpy.mock.calls.map((c: string[]) => c[0]);
       expect(calls[1]).toContain('Layer 3/3');
       expect(calls[1]).toContain('2 task(s)');
     });
 
     it('should handle single task in layer', () => {
       Logger.layerHeader(1, 1, 1);
-      const calls = consoleLogSpy.mock.calls.map(c => c[0]);
+      const calls = consoleLogSpy.mock.calls.map((c: string[]) => c[0]);
       expect(calls[1]).toContain('1 task(s)');
     });
 
     it('should create proper visual separator', () => {
       Logger.layerHeader(1, 2, 3);
-      const calls = consoleLogSpy.mock.calls.map(c => c[0]);
+      const calls = consoleLogSpy.mock.calls.map((c: string[]) => c[0]);
       expect(calls[0]).toContain('─');
       expect(calls[2]).toContain('─');
     });
@@ -290,7 +290,7 @@ describe('Logger', () => {
       Logger.help();
       expect(consoleLogSpy).toHaveBeenCalled();
       const call = consoleLogSpy.mock.calls[0][0] as string;
-      expect(call).toContain('bun-cache');
+      expect(call).toContain('orca');
       expect(call).toContain('Usage:');
       expect(call).toContain('run');
       expect(call).toContain('clean');
@@ -300,13 +300,13 @@ describe('Logger', () => {
       Logger.help();
       const call = consoleLogSpy.mock.calls[0][0] as string;
       expect(call).toContain('Examples:');
-      expect(call).toContain('bun-cache run build');
+      expect(call).toContain('orca run build');
     });
 
     it('should describe purpose', () => {
       Logger.help();
       const call = consoleLogSpy.mock.calls[0][0] as string;
-      expect(call).toContain('Local caching for monorepos');
+      expect(call).toContain('Task orchestrator with intelligent caching');
     });
   });
 
@@ -348,7 +348,7 @@ describe('Logger', () => {
       Logger.taskNotFound('build');
       expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Error'));
       expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('build'));
-      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('turbo.json'));
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('orca.json'));
     });
 
     it('should use errorWithContext', () => {

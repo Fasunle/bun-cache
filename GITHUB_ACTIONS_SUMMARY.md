@@ -1,6 +1,6 @@
 # GitHub Actions CI/CD Summary
 
-Complete CI/CD setup for `@fasunle/bun-cache` with automated testing and npm publishing.
+Complete CI/CD setup for `@fasunle/orca` with automated testing and npm publishing.
 
 ## 🎯 What's Been Set Up
 
@@ -17,7 +17,7 @@ Complete CI/CD setup for `@fasunle/bun-cache` with automated testing and npm pub
    - Runs on: GitHub Release created, Manual trigger
    - Runs all tests before publishing
    - Builds package for production
-   - Publishes to npm as `@fasunle/bun-cache`
+   - Publishes to npm as `@fasunle/orca`
    - Public access (anyone can install)
 
 3. **Release Workflow** (`.github/workflows/release.yml`)
@@ -26,8 +26,8 @@ Complete CI/CD setup for `@fasunle/bun-cache` with automated testing and npm pub
 
 ### ✅ Package Configuration
 
-- **NPM Name**: `@fasunle/bun-cache` (scoped package)
-- **CLI Name**: `bun-cache` (unchanged)
+- **NPM Name**: `@fasunle/orca` (scoped package)
+- **CLI Name**: `orca` (unchanged)
 - **Registry**: https://registry.npmjs.org (public)
 - **Access**: Public (anyone can install)
 
@@ -38,7 +38,7 @@ Complete CI/CD setup for `@fasunle/bun-cache` with automated testing and npm pub
 - `.github/workflows/release.yml` - Release management
 - `.npmrc.template` - npm auth template
 - Updated `package.json` with:
-  - Scoped name: `@fasunle/bun-cache`
+  - Scoped name: `@fasunle/orca`
   - Repository info
   - Main/exports fields
   - Version scripts
@@ -133,7 +133,7 @@ GitHub Actions Publish workflow starts
 6. Publish to npm registry
          ↓
 Package available at:
-npm: https://www.npmjs.com/package/@fasunle/bun-cache
+npm: https://www.npmjs.com/package/@fasunle/orca
 ```
 
 ## 🛠️ Available Commands
@@ -168,8 +168,8 @@ Before each release:
 - [ ] Version bumped in `package.json`
 - [ ] Changes committed and pushed
 - [ ] Release created on GitHub
-- [ ] Verify package on https://www.npmjs.com/package/@fasunle/bun-cache
-- [ ] Test installation: `npm install -g @fasunle/bun-cache`
+- [ ] Verify package on https://www.npmjs.com/package/@fasunle/orca
+- [ ] Test installation: `npm install -g @fasunle/orca`
 
 ## 🎯 Next Steps
 
@@ -187,15 +187,15 @@ Before each release:
    - Watch npm publish happen automatically!
 
 4. **Share with users**
-   - Installation: `npm install -g @fasunle/bun-cache`
+   - Installation: `npm install -g @fasunle/orca`
    - Usage: See INSTALL_GUIDE.md
 
 ## 🔗 Useful Links
 
-- **npm Package**: https://www.npmjs.com/package/@fasunle/bun-cache
-- **GitHub Repo**: https://github.com/fasunle/bun-cache
+- **npm Package**: https://www.npmjs.com/package/@fasunle/orca
+- **GitHub Repo**: https://github.com/fasunle/orca
 - **npm Tokens**: https://www.npmjs.com/settings/~/tokens
-- **GitHub Actions**: https://github.com/fasunle/bun-cache/actions
+- **GitHub Actions**: https://github.com/fasunle/orca/actions
 
 ## ✨ Features
 

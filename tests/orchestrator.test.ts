@@ -12,11 +12,11 @@ describe('Orchestrator', () => {
     testDir = join(tmpdir(), `podic-test-${Date.now()}`);
     mkdirSync(testDir, { recursive: true });
 
-    // Create a minimal turbo.json
+    // Create a minimal orca.json
     writeFileSync(
-      join(testDir, 'turbo.json'),
+      join(testDir, 'orca.json'),
       JSON.stringify({
-        pipeline: {
+        tasks: {
           build: {
             outputs: ['dist/**'],
             cache: true,
@@ -53,12 +53,12 @@ describe('Orchestrator', () => {
   });
 
   describe('constructor', () => {
-    it('should load turbo.json and package.json', () => {
+    it('should load orca.json and package.json', () => {
       const orchestrator = new Orchestrator(testDir);
       expect(orchestrator).toBeDefined();
     });
 
-    it('should throw error when turbo.json is missing', () => {
+    it('should throw error when orca.json is missing', () => {
       const invalidDir = join(tmpdir(), `podic-invalid-${Date.now()}`);
       mkdirSync(invalidDir, { recursive: true });
 
@@ -113,7 +113,7 @@ describe('Orchestrator', () => {
         await orchestrator.run('nonexistent-task');
         expect.fail('Should have thrown error');
       } catch (error) {
-        expect(String(error)).toContain('not defined in turbo.json');
+        expect(String(error)).toContain('not defined in orca.json');
       }
     });
 
@@ -195,11 +195,11 @@ describe('Orchestrator', () => {
 
   describe('task dependencies and graph resolution', () => {
     beforeEach(() => {
-      // Create turbo.json with task dependencies
+      // Create orca.json with task dependencies
       writeFileSync(
-        join(testDir, 'turbo.json'),
+        join(testDir, 'orca.json'),
         JSON.stringify({
-          pipeline: {
+          tasks: {
             build: {
               outputs: ['dist/**'],
               cache: true,
@@ -267,11 +267,11 @@ describe('Orchestrator', () => {
 
   describe('cross-workspace dependencies', () => {
     beforeEach(() => {
-      // Create turbo.json with cross-workspace dependencies
+      // Create orca.json with cross-workspace dependencies
       writeFileSync(
-        join(testDir, 'turbo.json'),
+        join(testDir, 'orca.json'),
         JSON.stringify({
-          pipeline: {
+          tasks: {
             build: {
               outputs: ['dist/**'],
               cache: true,
@@ -449,7 +449,7 @@ describe('Orchestrator', () => {
         await orchestrator.run('nonexistent-task');
         expect.fail('Should have thrown error');
       } catch (error) {
-        expect(String(error)).toContain('not defined in turbo.json');
+        expect(String(error)).toContain('not defined in orca.json');
       }
     });
 
@@ -500,11 +500,11 @@ describe('Orchestrator', () => {
 
     describe('circular dependency detection', () => {
       it('should handle task configuration with dependencies', async () => {
-        // Create turbo.json with dependencies
+        // Create orca.json with dependencies
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               build: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -570,8 +570,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -589,8 +589,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         // Should not throw, just return empty array
@@ -611,8 +611,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -715,8 +715,8 @@ describe('Orchestrator', () => {
           // Expected in test environment
         }
 
-        // Verify cache directory was created (cache stores in node_modules/.bun-cache)
-        const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+        // Verify cache directory was created (cache stores in .orca at root)
+        const cacheDir = join(testDir, '.orca');
         expect(existsSync(cacheDir)).toBe(true);
       });
     });
@@ -724,9 +724,9 @@ describe('Orchestrator', () => {
     describe('same-workspace dependencies (no hash)', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               prebuild: {
                 outputs: ['prebuild/**'],
                 cache: true,
@@ -793,9 +793,9 @@ describe('Orchestrator', () => {
     describe('task without dependencies or outputs', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               lint: {
                 cache: false, // No cache
                 // No dependencies
@@ -905,9 +905,9 @@ describe('Orchestrator', () => {
     describe('missing dependsOn property', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               build: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -1118,9 +1118,9 @@ describe('Orchestrator', () => {
     describe('topological sort and execution layers', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               prepare: {
                 outputs: [],
                 cache: false,
@@ -1285,9 +1285,9 @@ describe('Orchestrator', () => {
     describe('conditional branching in dependency resolution', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               build: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -1355,9 +1355,9 @@ describe('Orchestrator', () => {
     describe('cache enabled vs disabled branching', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               build: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -1444,8 +1444,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -1466,8 +1466,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -1484,8 +1484,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -1496,9 +1496,9 @@ describe('Orchestrator', () => {
     describe('execution flow branching', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               setup: {
                 outputs: [],
                 cache: false,
@@ -1553,9 +1553,9 @@ describe('Orchestrator', () => {
 
       it('should handle multiple independent tasks in same layer', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               lint: { outputs: [], cache: false },
               format: { outputs: [], cache: false },
               both: {
@@ -1596,9 +1596,9 @@ describe('Orchestrator', () => {
     describe('cache hit actual execution', () => {
       beforeEach(() => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               build: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -1669,9 +1669,9 @@ describe('Orchestrator', () => {
     describe('condition branches for cache and execution', () => {
       it('should only check cache when config.cache is true', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               nocache: {
                 outputs: [],
                 cache: false, // Explicitly false
@@ -1707,9 +1707,9 @@ describe('Orchestrator', () => {
 
       it('should always execute tasks when cache is false even with outputs', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               task: {
                 outputs: ['build/**', 'dist/**'],
                 cache: false, // Cache disabled
@@ -1876,9 +1876,9 @@ describe('Orchestrator', () => {
     describe('dependency resolution branching', () => {
       it('should recursively resolve dependencies', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               a: { outputs: [], cache: false },
               b: { outputs: [], cache: false, dependsOn: ['a'] },
               c: { outputs: [], cache: false, dependsOn: ['b'] },
@@ -1913,9 +1913,9 @@ describe('Orchestrator', () => {
 
       it('should handle task with no dependsOn property', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               standalone: {
                 outputs: [],
                 cache: false,
@@ -1951,9 +1951,9 @@ describe('Orchestrator', () => {
 
       it('should handle both cross-workspace and same-workspace deps', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               setup: { outputs: [], cache: false },
               build: {
                 outputs: [],
@@ -2005,9 +2005,9 @@ describe('Orchestrator', () => {
     describe('final branch coverage - edge cases', () => {
       it('should handle config.cache === true and cache save', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               work: {
                 outputs: ['output/**'],
                 cache: true,
@@ -2046,9 +2046,9 @@ describe('Orchestrator', () => {
 
       it('should handle command that fails (non-zero exit)', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               fail: {
                 outputs: [],
                 cache: false,
@@ -2094,8 +2094,8 @@ describe('Orchestrator', () => {
         );
 
         writeFileSync(
-          join(testDir, 'turbo.json'),
-          JSON.stringify({ pipeline: {}, globalDependencies: [] })
+          join(testDir, 'orca.json'),
+          JSON.stringify({ tasks: {}, globalDependencies: [] })
         );
 
         const orchestrator = new Orchestrator(testDir);
@@ -2105,9 +2105,9 @@ describe('Orchestrator', () => {
 
       it('should handle cache.restore when cache hit occurs', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               cached: {
                 outputs: ['dist/**'],
                 cache: true,
@@ -2177,9 +2177,9 @@ describe('Orchestrator', () => {
 
       it('should handle all execution branches with actual dependencies', async () => {
         writeFileSync(
-          join(testDir, 'turbo.json'),
+          join(testDir, 'orca.json'),
           JSON.stringify({
-            pipeline: {
+            tasks: {
               install: { outputs: [], cache: false },
               lint: { outputs: [], cache: false, dependsOn: ['install'] },
               build: { outputs: [], cache: false, dependsOn: ['lint'] },

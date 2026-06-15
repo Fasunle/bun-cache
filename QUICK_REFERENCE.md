@@ -1,41 +1,41 @@
 # Quick Reference Guide
 
-Quick lookup for common tasks with `@fasunle/bun-cache`.
+Quick lookup for common tasks with `@fasunle/orca`.
 
 ## Installation
 
 ```bash
 # Global
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 
 # Local
-npm install --save-dev @fasunle/bun-cache
+npm install --save-dev @fasunle/orca
 
 # Bun
-bun install @fasunle/bun-cache
+bun install @fasunle/orca
 ```
 
 ## Basic Commands
 
 ```bash
 # Run task across workspaces
-bun-cache run build
+orca run build
 
 # Run in specific workspace
-bun-cache run build apps/web
+orca run build apps/web
 
 # Clear cache
-bun-cache clean
+orca clean
 
 # Show help
-bun-cache --help
+orca --help
 ```
 
-## Minimal turbo.json
+## Minimal orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     },
@@ -94,7 +94,7 @@ bun-cache --help
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
@@ -114,7 +114,7 @@ bun-cache --help
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -136,7 +136,7 @@ bun-cache --help
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "generate": {
       "outputs": ["src/generated/**"]
     },
@@ -159,26 +159,26 @@ bun-cache --help
 | Cache not working           | Check `outputs` defined + actual files exist |
 | Cache invalidates too often | Refine `inputs` pattern                      |
 | Circular dependency error   | Check `dependsOn` for circular refs          |
-| Command not found           | Install: `npm install -g @fasunle/bun-cache` |
-| Permission denied           | Run `bun-cache clean`                        |
+| Command not found           | Install: `npm install -g @fasunle/orca`      |
+| Permission denied           | Run `orca clean`                             |
 
 ## Useful Commands
 
 ```bash
 # Verbose output (see execution order)
-bun-cache run build --verbose
+orca run build --verbose
 
 # Specific workspace
-bun-cache run build apps/web
+orca run build apps/web
 
 # Multiple workspaces
-bun-cache run build apps/web apps/mobile
+orca run build apps/web apps/mobile
 
 # Clear cache
-bun-cache clean
+orca clean
 
 # Help
-bun-cache --help
+orca --help
 ```
 
 ## Package.json Scripts
@@ -186,11 +186,11 @@ bun-cache --help
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build",
-    "test": "bun-cache run test",
-    "lint": "bun-cache run lint",
-    "dev": "bun-cache run dev",
-    "clean": "bun-cache clean"
+    "build": "orca run build",
+    "test": "orca run test",
+    "lint": "orca run lint",
+    "dev": "orca run dev",
+    "clean": "orca clean"
   }
 }
 ```
@@ -225,27 +225,27 @@ Files affecting all tasks:
 
 ```bash
 # Cache stored at:
-node_modules/.bun-cache/
+.orca/
 
 # Check size:
-du -sh node_modules/.bun-cache/
+du -sh .orca/
 
 # Clear:
-bun-cache clean  # OR
-rm -rf node_modules/.bun-cache/
+orca clean  # OR
+rm -rf .orca/
 ```
 
 ## GitHub Actions Example
 
 ```yaml
-- name: Install bun-cache
-  run: npm install -g @fasunle/bun-cache
+- name: Install orca
+  run: npm install -g @fasunle/orca
 
 - name: Build
-  run: bun-cache run build
+  run: orca run build
 
 - name: Test
-  run: bun-cache run test
+  run: orca run test
 ```
 
 ## Performance Tips
@@ -293,7 +293,7 @@ rm -rf node_modules/.bun-cache/
 
 - Issues: GitHub Issues
 - Questions: GitHub Discussions
-- Package: [@fasunle/bun-cache](https://npmjs.com/package/@fasunle/bun-cache)
+- Package: [@fasunle/orca](https://npmjs.com/package/@fasunle/orca)
 
 ---
 

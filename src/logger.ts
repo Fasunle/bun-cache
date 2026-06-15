@@ -103,16 +103,16 @@ export class Logger {
    */
   static help(): void {
     console.log(`
-${chalk.cyan.bold('bun-cache')} ${chalk.gray('- Local caching for monorepos')}
+${chalk.cyan.bold('orca')} ${chalk.gray('- Task orchestrator with intelligent caching')}
 
 ${chalk.bold('Usage:')}
-  ${chalk.cyan('bun-cache run <task> [targets...]')}
-  ${chalk.cyan('bun-cache clean')}
+  ${chalk.cyan('orca run <task> [targets...]')}
+  ${chalk.cyan('orca clean')}
 
 ${chalk.bold('Examples:')}
-  ${chalk.gray('bun-cache run build')}
-  ${chalk.gray('bun-cache run test apps/web')}
-  ${chalk.gray('bun-cache clean')}
+  ${chalk.gray('orca run build')}
+  ${chalk.gray('orca run test apps/web')}
+  ${chalk.gray('orca clean')}
     `);
   }
 
@@ -134,7 +134,7 @@ ${chalk.bold('Examples:')}
    * Log task not found error
    */
   static taskNotFound(task: string): void {
-    this.errorWithContext('Error', `Task "${chalk.cyan(task)}" not defined in turbo.json`);
+    this.errorWithContext('Error', `Task "${chalk.cyan(task)}" not defined in orca.json`);
   }
 
   /**

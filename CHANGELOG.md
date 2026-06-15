@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automated npm publishing on release
 - Test suite with 53 comprehensive tests
 - Dynamic task orchestration engine
-- Turbo-inspired configuration system
+- Orca-inspired configuration system
 - Local caching for monorepo tasks
 - Hasher for consistent cache keys
 - Cache manager with persistence
@@ -30,8 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial public release on npm
-- `bun-cache` CLI with global installation support
-- Scoped package: `@fasunle/bun-cache`
+- `orca` CLI with global installation support
+- Scoped package: `@fasunle/orca`
 - Complete documentation and guides
 - GitHub Actions workflows (test & publish)
 
@@ -80,14 +80,14 @@ Thank you to all contributors!
 ### Installation
 
 ```bash
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 ```
 ````
 
 Or for a specific version:
 
 ```bash
-npm install -g @fasunle/bun-cache@0.1.x
+npm install -g @fasunle/orca@0.1.x
 ```
 
 ````

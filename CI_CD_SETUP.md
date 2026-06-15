@@ -1,6 +1,6 @@
 # CI/CD Setup & Deployment Guide
 
-This project uses GitHub Actions to automatically test and publish to npm registry as `@fasunle/bun-cache`.
+This project uses GitHub Actions to automatically test and publish to npm registry as `@fasunle/orca`.
 
 ## 🚀 Quick Start
 
@@ -158,25 +158,25 @@ For automatic versioning and release management:
 ### Check if package is published:
 
 ```bash
-npm view @fasunle/bun-cache
+npm view @fasunle/orca
 ```
 
 ### Install the package locally:
 
 ```bash
-npm install @fasunle/bun-cache
+npm install @fasunle/orca
 ```
 
 Or globally:
 
 ```bash
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 ```
 
 ### Run the CLI:
 
 ```bash
-bun-cache run build
+orca run build
 ```
 
 ## 🐛 Troubleshooting

@@ -1,6 +1,6 @@
 # Examples & Use Cases
 
-Real-world examples and step-by-step tutorials for using `@fasunle/bun-cache`.
+Real-world examples and step-by-step tutorials for using `@fasunle/orca`.
 
 ## Table of Contents
 
@@ -56,11 +56,11 @@ npm init -y
 }
 ```
 
-**4. Create turbo.json:**
+**4. Create orca.json:**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -73,17 +73,17 @@ npm init -y
 
 ```bash
 npm install
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 
 # First run
-$ bun-cache run build
+$ orca run build
 ⚙️  Executing: packages/utils:build
 ✓ Completed: packages/utils:build (156ms)
 ⚙️  Executing: apps/web:build
 ✓ Completed: apps/web:build (142ms)
 
 # Second run (cache hit!)
-$ bun-cache run build
+$ orca run build
 ✓ Cache hit: packages/utils:build
 ✓ Cache hit: apps/web:build
 ```
@@ -126,7 +126,7 @@ react-monorepo/
 │   └── types/                  # TypeScript types
 │       ├── src/
 │       └── package.json
-├── turbo.json
+├── orca.json
 ├── tsconfig.json
 └── package.json
 ```
@@ -140,17 +140,17 @@ react-monorepo/
   "private": true,
   "workspaces": ["apps/*", "packages/*"],
   "devDependencies": {
-    "@fasunle/bun-cache": "latest",
+    "@fasunle/orca": "latest",
     "typescript": "^5.0.0"
   }
 }
 ```
 
-### turbo.json Configuration
+### orca.json Configuration
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "build/**"],
@@ -222,7 +222,7 @@ react-monorepo/
 **Build everything:**
 
 ```bash
-$ bun-cache run build
+$ orca run build
 
 # First time: ~30 seconds
 ⚙️  Executing: packages/types:build
@@ -250,7 +250,7 @@ $ bun-cache run build
 **Run tests:**
 
 ```bash
-$ bun-cache run test
+$ orca run test
 
 # Builds first, then tests
 ⚙️  Executing: apps/web:test
@@ -264,10 +264,10 @@ $ bun-cache run test
 **Development mode:**
 
 ```bash
-$ bun-cache run dev
+$ orca run dev
 
 # For web app specifically
-$ bun-cache run dev apps/web
+$ orca run dev apps/web
 ```
 
 ---
@@ -310,15 +310,15 @@ backend-monorepo/
 │   └── utils/
 │       ├── src/
 │       └── package.json
-├── turbo.json
+├── orca.json
 └── package.json
 ```
 
-### turbo.json
+### orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "compile": {
       "outputs": ["lib/**", "dist/**"],
       "inputs": ["src/**", "tsconfig.json"]
@@ -367,29 +367,29 @@ backend-monorepo/
 # In GitHub Actions
 
 # 1. Lint all code
-$ bun-cache run lint
+$ orca run lint
 ✓ All files lint cleanly
 
 # 2. Type check
-$ bun-cache run type-check
+$ orca run type-check
 ✓ No type errors
 
 # 3. Build everything
-$ bun-cache run build
+$ orca run build
 Compiling packages/types
 Compiling packages/database
 Building services/api
 Building services/auth
 
 # 4. Run tests
-$ bun-cache run test
+$ orca run test
 Running packages/database:test
 Running services/api:test
 Running services/auth:test
 Coverage: 85%
 
 # 5. Deploy
-$ bun-cache run deploy
+$ orca run deploy
 Deploying service...
 ✓ Deployed
 ```
@@ -398,20 +398,20 @@ Deploying service...
 
 ```bash
 # Compile packages
-$ bun-cache run compile
+$ orca run compile
 ⚙️  Executing: packages/types:compile
 ⚙️  Executing: packages/database:compile
 ⚙️  Executing: packages/logger:compile
 
 # Start specific service
-$ bun-cache run start services/api
+$ orca run start services/api
 ✓ Cache hit: packages/types:compile
 ✓ Cache hit: packages/database:compile
 ✓ Building services/api:build
 ✓ API running on http://localhost:3000
 
 # Run migrations
-$ bun-cache run migrate
+$ orca run migrate
 ✓ Migrations completed
 ```
 
@@ -437,14 +437,14 @@ fullstack-app/
 │   ├── types/            # Shared types
 │   ├── database/         # ORM/migrations
 │   └── utils/
-└── turbo.json
+└── orca.json
 ```
 
-### Complete turbo.json
+### Complete orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "generate": {
       "outputs": ["src/generated/**"],
       "inputs": ["schema/**", "gql/**"]
@@ -489,13 +489,13 @@ fullstack-app/
 ```bash
 $ bun install
 
-$ bun-cache run generate
+$ orca run generate
 ⚙️  Executing: packages/types:generate
 ✓ Completed: packages/types:generate (1.2s)
 ⚙️  Executing: apps/web:generate
 ✓ Completed: apps/web:generate (2.1s)
 
-$ bun-cache run build
+$ orca run build
 ⚙️  Executing: packages/database:compile
 ✓ Completed: packages/database:compile (3.2s)
 ⚙️  Executing: packages/ui:build
@@ -511,7 +511,7 @@ Total: ~25 seconds
 **Afternoon - Second Run (Cache Hit):**
 
 ```bash
-$ bun-cache run build
+$ orca run build
 
 ✓ Cache hit: packages/database:compile
 ✓ Cache hit: packages/ui:build
@@ -526,7 +526,7 @@ Total: ~0.3 seconds
 ```bash
 # Edit: packages/ui/Button.tsx
 
-$ bun-cache run build
+$ orca run build
 ✓ Cache hit: packages/database:compile
 ⚙️  Executing: packages/ui:build
 ✓ Completed: packages/ui:build (2.1s)
@@ -556,14 +556,14 @@ cross-platform/
 │   ├── types/
 │   ├── utils/
 │   └── api-client/
-└── turbo.json
+└── orca.json
 ```
 
 ### Configuration
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "android/**", "ios/**"],
@@ -584,16 +584,16 @@ cross-platform/
 
 ```bash
 # Build for all platforms
-$ bun-cache run build
+$ orca run build
 
 # Build web and admin only
-$ bun-cache run build apps/web apps/admin
+$ orca run build apps/web apps/admin
 
 # Run tests
-$ bun-cache run test
+$ orca run test
 
 # Development
-$ bun-cache run dev apps/web
+$ orca run dev apps/web
 ```
 
 ---
@@ -619,14 +619,14 @@ microservices/
 │   ├── logger/
 │   ├── auth/
 │   └── config/
-└── turbo.json
+└── orca.json
 ```
 
 ### Configuration
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -647,16 +647,16 @@ microservices/
 
 ```bash
 # Build all services
-$ bun-cache run build
+$ orca run build
 
 # Test all services
-$ bun-cache run test
+$ orca run test
 
 # Docker build changed services only
-$ bun-cache run docker
+$ orca run docker
 
 # Deploy specific service
-$ bun-cache run deploy services/users
+$ orca run deploy services/users
 ```
 
 ---
@@ -677,14 +677,14 @@ library-monorepo/
 │   └── types/          # TypeScript types
 ├── examples/           # Usage examples
 ├── docs/              # Documentation
-└── turbo.json
+└── orca.json
 ```
 
 ### Configuration
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "lib/**"],
@@ -708,23 +708,23 @@ library-monorepo/
 
 ```bash
 # Build all packages
-$ bun-cache run build
+$ orca run build
 
 # Test all packages
-$ bun-cache run test
+$ orca run test
 
 # Publish to npm
-$ bun-cache run publish
+$ orca run publish
 
 # Update documentation
-$ bun-cache run docs
+$ orca run docs
 ```
 
 ---
 
 ## Performance Comparison
 
-Real-world performance gains from using `@fasunle/bun-cache`:
+Real-world performance gains from using `@fasunle/orca`:
 
 ### React Monorepo (3 apps + 3 packages)
 
@@ -733,7 +733,7 @@ First build (no cache):     45 seconds
 Cached rebuild:             0.8 seconds    (56x faster!)
 After code change:          12 seconds     (3.7x faster)
 After config change:        28 seconds     (1.6x faster)
-CI/CD full pipeline:        52 seconds
+CI/CD full tasks:        52 seconds
 CI/CD with cache:           1.2 seconds
 ```
 
@@ -765,8 +765,8 @@ After shared package change: 45 seconds
 Warm up cache before CI/CD:
 
 ```bash
-bun-cache run build
-bun-cache run test
+orca run build
+orca run test
 ```
 
 ### Selective Building
@@ -775,10 +775,10 @@ Build only changed workspaces:
 
 ```bash
 # Build specific app
-bun-cache run build apps/web
+orca run build apps/web
 
 # Build multiple
-bun-cache run build apps/web apps/mobile
+orca run build apps/web apps/mobile
 ```
 
 ### Cache Debugging
@@ -786,20 +786,20 @@ bun-cache run build apps/web apps/mobile
 View what's cached:
 
 ```bash
-ls -la node_modules/.bun-cache/
+ls -la .orca/
 
 # See cache metadata
-cat node_modules/.bun-cache/[hash].json
+cat .orca/[hash].json
 ```
 
 ### Clean Cache
 
 ```bash
 # Clean all
-bun-cache clean
+orca clean
 
 # Then rebuild
-bun-cache run build
+orca run build
 ```
 
 ---

@@ -18,8 +18,8 @@ Your project is now fully configured for automated testing and deployment to npm
 
 Updates:
 
-- ✅ Name: `@fasunle/bun-cache` (scoped)
-- ✅ CLI: `bun-cache` (unchanged)
+- ✅ Name: `@fasunle/orca` (scoped)
+- ✅ CLI: `orca` (unchanged)
 - ✅ Main: `./dist/cli.js`
 - ✅ Exports: Configured for ESM
 - ✅ Repository: GitHub repo metadata
@@ -65,7 +65,7 @@ Created comprehensive guides:
 3. **INSTALL_GUIDE.md** (250+ lines)
    - User installation instructions (global/local)
    - Usage examples
-   - Configuration guide for `turbo.json`
+   - Configuration guide for `orca.json`
    - Caching explanation
    - Performance benchmarks
    - Development examples
@@ -146,7 +146,7 @@ git push origin main
 **Status badges:**
 
 ```markdown
-![Test](https://github.com/fasunle/bun-cache/workflows/Test/badge.svg)
+![Test](https://github.com/fasunle/orca/workflows/Test/badge.svg)
 ```
 
 ### Publish Workflow
@@ -171,7 +171,7 @@ git push origin main
 **Access level:**
 
 - Public scoped package
-- Anyone can install: `npm install @fasunle/bun-cache`
+- Anyone can install: `npm install @fasunle/orca`
 
 ### Release Workflow (Optional)
 
@@ -244,7 +244,7 @@ root/
    ↓
 8. Package appears on npm registry!
    ↓
-9. Users can install: npm install -g @fasunle/bun-cache
+9. Users can install: npm install -g @fasunle/orca
 ```
 
 ### Cache & Build
@@ -279,10 +279,10 @@ After setup:
 - [ ] Create a GitHub release
 - [ ] Publish workflow runs automatically
 - [ ] Package appears on npm:
-  - `npm view @fasunle/bun-cache`
+  - `npm view @fasunle/orca`
 - [ ] Test installation:
-  - `npm install -g @fasunle/bun-cache`
-  - `bun-cache --help`
+  - `npm install -g @fasunle/orca`
+  - `orca --help`
 
 ## 🚨 Troubleshooting
 
@@ -329,12 +329,12 @@ npm login
 npm publish --access public
 
 # Check npm package
-npm view @fasunle/bun-cache
-npm info @fasunle/bun-cache
+npm view @fasunle/orca
+npm info @fasunle/orca
 
 # Test installation
-npm install -g @fasunle/bun-cache
-bun-cache --help
+npm install -g @fasunle/orca
+orca --help
 ```
 
 ## 📚 Documentation Files
@@ -379,8 +379,8 @@ Your project now has:
 ✅ **Production Ready** - Tests run before every publish
 ✅ **Security** - Credentials stored safely in GitHub Secrets
 ✅ **Documentation** - Complete guides for users and developers
-✅ **Scoped Package** - Available as `@fasunle/bun-cache` on npm
-✅ **CLI Ready** - Installable globally as `bun-cache`
+✅ **Scoped Package** - Available as `@fasunle/orca` on npm
+✅ **CLI Ready** - Installable globally as `orca`
 
 **You're ready to publish! 🚀**
 

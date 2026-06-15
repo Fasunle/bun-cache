@@ -1,4 +1,4 @@
-# Contributing to @fasunle/bun-cache
+# Contributing to @fasunle/orca
 
 Thank you for your interest in contributing! This guide will help you get started.
 
@@ -21,8 +21,8 @@ Thank you for your interest in contributing! This guide will help you get starte
 
 ```bash
 # Clone repository
-git clone https://github.com/fasunle/bun-cache.git
-cd bun-cache
+git clone https://github.com/fasunle/orca.git
+cd orca
 
 # Install dependencies
 bun install
@@ -335,7 +335,7 @@ bun run build
 
 # Test global installation
 npm link
-bun-cache run build
+orca run build
 npm unlink
 ```
 
@@ -394,7 +394,7 @@ The caching system isn't working correctly with glob patterns in outputs.
 
 **Steps to Reproduce:**
 
-1. Create turbo.json with "dist/\*\*" in outputs
+1. Create orca.json with "dist/\*\*" in outputs
 2. Run build
 3. Run build again
 
@@ -409,7 +409,7 @@ Build runs again from scratch
 - OS: macOS 13.1
 - Node: 18.13.0
 - Bun: 1.0.1
-- @fasunle/bun-cache: 0.1.0
+- @fasunle/orca: 0.1.0
 
 **Error:**
 ```
@@ -431,10 +431,10 @@ When contributing performance improvements:
 
 ```bash
 # Profile the CLI
-time bun-cache run build
+time orca run build
 
 # With verbose output
-bun-cache run build --verbose
+orca run build --verbose
 ```
 
 ## Documentation Contributions
@@ -500,7 +500,7 @@ By contributing, you agree that your contributions will be licensed under the sa
 
 ## Helpful Resources
 
-- [Turbo Documentation](https://turbo.build/docs)
+- [Orca Documentation](https://orca.build/docs)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Vitest Documentation](https://vitest.dev/)
 - [Node.js Documentation](https://nodejs.org/docs/)
@@ -511,6 +511,6 @@ By contributing, you agree that your contributions will be licensed under the sa
 Contributors will be recognized in:
 
 - [CHANGELOG.md](./CHANGELOG.md)
-- [GitHub Contributors](https://github.com/fasunle/bun-cache/graphs/contributors)
+- [GitHub Contributors](https://github.com/fasunle/orca/graphs/contributors)
 
-Thank you for contributing to @fasunle/bun-cache! 🎉
+Thank you for contributing to @fasunle/orca! 🎉

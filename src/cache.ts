@@ -7,7 +7,7 @@ export class CacheManager {
 
   constructor(rootDir: string) {
     this.rootDir = rootDir;
-    this.cacheDir = join(rootDir, 'node_modules', '.bun-cache');
+    this.cacheDir = join(rootDir, '.orca');
     if (!existsSync(this.cacheDir)) {
       mkdirSync(this.cacheDir, { recursive: true });
     }

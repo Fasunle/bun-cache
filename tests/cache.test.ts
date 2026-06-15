@@ -22,7 +22,7 @@ describe('CacheManager', () => {
 
   describe('cache initialization', () => {
     it('should create cache directory on instantiation', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       expect(existsSync(cacheDir)).toBe(true);
     });
 
@@ -45,7 +45,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/index.js'];
       cacheManager.save('test-hash-123', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'test-hash-123.json');
+      const metaPath = join(testDir, '.orca', 'test-hash-123.json');
       expect(existsSync(metaPath)).toBe(true);
     });
 
@@ -53,7 +53,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/index.js'];
       cacheManager.save('hash-456', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'hash-456.json');
+      const metaPath = join(testDir, '.orca', 'hash-456.json');
       const meta = JSON.parse(require('fs').readFileSync(metaPath, 'utf-8'));
 
       expect(meta.outputs).toBeDefined();
@@ -66,7 +66,7 @@ describe('CacheManager', () => {
       cacheManager.save('hash-timestamp', outputs, testDir);
       const after = Date.now();
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'hash-timestamp.json');
+      const metaPath = join(testDir, '.orca', 'hash-timestamp.json');
       const meta = JSON.parse(require('fs').readFileSync(metaPath, 'utf-8'));
 
       expect(meta.timestamp).toBeDefined();
@@ -83,7 +83,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/index.js', 'dist/style.css'];
       cacheManager.save('hash-multi', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'hash-multi.json');
+      const metaPath = join(testDir, '.orca', 'hash-multi.json');
       const meta = JSON.parse(require('fs').readFileSync(metaPath, 'utf-8'));
 
       expect(meta.outputs.length).toBe(2);
@@ -114,7 +114,7 @@ describe('CacheManager', () => {
       cacheManager.save('valid-hash', ['dist/index.js'], testDir);
 
       // Verify metadata was saved
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'valid-hash.json');
+      const metaPath = join(testDir, '.orca', 'valid-hash.json');
       expect(existsSync(metaPath)).toBe(true);
     });
 
@@ -161,7 +161,7 @@ describe('CacheManager', () => {
       cacheManager.save('meta-hash', ['dist/bundle.js'], testDir);
 
       // Verify metadata was saved and contains outputs
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'meta-hash.json');
+      const metaPath = join(testDir, '.orca', 'meta-hash.json');
       expect(existsSync(metaPath)).toBe(true);
 
       const meta = JSON.parse(readFileSync(metaPath, 'utf-8'));
@@ -193,7 +193,7 @@ describe('CacheManager', () => {
 
   describe('clean', () => {
     it('should remove cache directory', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       expect(existsSync(cacheDir)).toBe(true);
 
       cacheManager.clean();
@@ -202,7 +202,7 @@ describe('CacheManager', () => {
     });
 
     it('should handle clean when cache directory is already removed', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       rmSync(cacheDir, { recursive: true, force: true });
 
       // Should not throw
@@ -216,7 +216,7 @@ describe('CacheManager', () => {
 
       // Create a new manager (which will recreate the cache dir)
       const newManager = new CacheManager(testDir);
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
 
       expect(existsSync(cacheDir)).toBe(true);
     });
@@ -231,7 +231,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/index.js'];
       cacheManager.save('json-hash', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'json-hash.json');
+      const metaPath = join(testDir, '.orca', 'json-hash.json');
 
       expect(() => {
         JSON.parse(require('fs').readFileSync(metaPath, 'utf-8'));
@@ -245,7 +245,7 @@ describe('CacheManager', () => {
 
       cacheManager.save('readable-hash', ['dist/file.js'], testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'readable-hash.json');
+      const metaPath = join(testDir, '.orca', 'readable-hash.json');
       const content = require('fs').readFileSync(metaPath, 'utf-8');
       const meta = JSON.parse(content);
 
@@ -265,7 +265,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/lib'];
       cacheManager.save('dir-hash', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'dir-hash.json');
+      const metaPath = join(testDir, '.orca', 'dir-hash.json');
       expect(existsSync(metaPath)).toBe(true);
     });
 
@@ -297,7 +297,7 @@ describe('CacheManager', () => {
       const outputs = ['dist/index.js', 'dist/assets'];
       cacheManager.save('mixed-hash', outputs, testDir);
 
-      const metaPath = join(testDir, 'node_modules', '.bun-cache', 'mixed-hash.json');
+      const metaPath = join(testDir, '.orca', 'mixed-hash.json');
       const meta = JSON.parse(readFileSync(metaPath, 'utf-8'));
       expect(meta.outputs).toEqual(outputs);
     });
@@ -305,7 +305,7 @@ describe('CacheManager', () => {
 
   describe('edge cases', () => {
     it('should handle corrupted metadata gracefully', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       mkdirSync(cacheDir, { recursive: true });
       writeFileSync(join(cacheDir, 'corrupt.json'), 'invalid json {');
 
@@ -314,7 +314,7 @@ describe('CacheManager', () => {
     });
 
     it('should handle metadata with missing outputs property', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       mkdirSync(cacheDir, { recursive: true });
       writeFileSync(join(cacheDir, 'bad-meta.json'), JSON.stringify({ timestamp: 123 }));
 
@@ -323,7 +323,7 @@ describe('CacheManager', () => {
     });
 
     it('should handle non-array outputs in metadata', () => {
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       mkdirSync(cacheDir, { recursive: true });
       writeFileSync(join(cacheDir, 'wrong-type.json'), JSON.stringify({ outputs: 'not-array' }));
 
@@ -339,7 +339,7 @@ describe('CacheManager', () => {
 
     it('should handle restore with missing cached files', () => {
       // Create metadata pointing to non-existent cached files
-      const cacheDir = join(testDir, 'node_modules', '.bun-cache');
+      const cacheDir = join(testDir, '.orca');
       mkdirSync(cacheDir, { recursive: true });
       writeFileSync(
         join(cacheDir, 'orphan.json'),

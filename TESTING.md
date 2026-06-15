@@ -56,7 +56,7 @@ Test files are organized by component:
 
 **Key tests:**
 
-- ✅ Loading configuration from turbo.json
+- ✅ Loading configuration from orca.json
 - ✅ Discovering workspaces with tasks
 - ✅ Building execution plans with dependencies
 - ✅ Cache hit/miss scenarios
@@ -151,7 +151,7 @@ describe('ComponentName', () => {
 
 ## CI/CD Integration
 
-Run in your CI pipeline:
+Run in your CI tasks:
 
 ```bash
 bun run test:run

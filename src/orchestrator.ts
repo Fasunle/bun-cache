@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { spawn } from 'child_process';
-import type { TurboConfig, PipelineTask } from './types';
+import type { OrcaConfig, PipelineTask } from './types';
 import { Hasher } from './hasher';
 import { CacheManager } from './cache';
 import { Logger } from './logger';
@@ -23,7 +23,7 @@ interface ExecutionPlan {
 export class Orchestrator {
   private hasher: Hasher;
   private cache: CacheManager;
-  private config: TurboConfig;
+  private config: OrcaConfig;
   private workspaces: string[];
   private rootDir: string;
   private taskGraph: Map<string, TaskGraphNode> = new Map();
@@ -37,9 +37,9 @@ export class Orchestrator {
     this.hasher = new Hasher(rootDir);
     this.cache = new CacheManager(rootDir);
 
-    // Read turbo.json
-    const turboPath = join(rootDir, 'turbo.json');
-    this.config = JSON.parse(readFileSync(turboPath, 'utf-8'));
+    // Read orca.json
+    const orcaPath = join(rootDir, 'orca.json');
+    this.config = JSON.parse(readFileSync(orcaPath, 'utf-8'));
 
     // Read workspaces from package.json
     const pkgPath = join(rootDir, 'package.json');
@@ -66,8 +66,8 @@ export class Orchestrator {
     const toRun = await this.getWorkspaces(targets);
 
     // Validate task exists
-    if (!this.config.pipeline[taskName]) {
-      throw new Error(`Task "${taskName}" not defined in turbo.json`);
+    if (!this.config.tasks[taskName]) {
+      throw new Error(`Task "${taskName}" not defined in orca.json`);
     }
 
     // Build task graph dynamically from config
@@ -113,9 +113,9 @@ export class Orchestrator {
       return this.taskGraph.get(nodeId)!;
     }
 
-    const taskConfig = this.config.pipeline[task];
+    const taskConfig = this.config.tasks[task];
     if (!taskConfig) {
-      throw new Error(`Task "${task}" not defined in turbo.json`);
+      throw new Error(`Task "${task}" not defined in orca.json`);
     }
 
     const node: TaskGraphNode = {

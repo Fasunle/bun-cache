@@ -1,14 +1,18 @@
-export interface TurboConfig {
-  pipeline: Record<string, PipelineTask>;
+export interface OrcaConfig {
+  tasks: Record<string, OrcaTask>;
   globalDependencies?: string[];
 }
 
-export interface PipelineTask {
+export interface OrcaTask {
   dependsOn?: string[];
   outputs?: string[];
   cache?: boolean;
   inputs?: string[];
 }
+
+// Legacy type aliases for backward compatibility
+export type OrcaConfig = OrcaConfig;
+export type PipelineTask = OrcaTask;
 
 export interface TaskExecution {
   task: string;

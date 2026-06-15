@@ -1,11 +1,11 @@
 # Configuration Guide
 
-Complete reference for configuring `@fasunle/bun-cache` with `turbo.json`.
+Complete reference for configuring `@fasunle/orca` with `orca.json`.
 
 ## Table of Contents
 
 - [Basic Configuration](#basic-configuration)
-- [Pipeline Configuration](#pipeline-configuration)
+- [Pipeline Configuration](#tasks-configuration)
 - [Task Configuration](#task-configuration)
 - [Advanced Features](#advanced-features)
 - [Configuration Examples](#configuration-examples)
@@ -13,13 +13,13 @@ Complete reference for configuring `@fasunle/bun-cache` with `turbo.json`.
 
 ## Basic Configuration
 
-### Minimal turbo.json
+### Minimal orca.json
 
 The smallest working configuration:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     }
@@ -27,7 +27,7 @@ The smallest working configuration:
 }
 ```
 
-This tells bun-cache:
+This tells orca:
 
 - There's a `build` task
 - Cache outputs in `dist/` folder
@@ -36,7 +36,7 @@ This tells bun-cache:
 
 ```json
 {
-  "pipeline": { ... },
+  "tasks": { ... },
   "globalDependencies": [
     "tsconfig.json",
     ".eslintrc.json",
@@ -49,11 +49,11 @@ This tells bun-cache:
 
 ## Pipeline Configuration
 
-The pipeline defines all available tasks:
+The tasks defines all available tasks:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": { ... },
     "test": { ... },
     "lint": { ... },
@@ -258,7 +258,7 @@ Different configs per environment:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"],
       "cache": true
@@ -283,7 +283,7 @@ Handle different output directories:
 }
 ```
 
-bun-cache automatically handles each workspace's own output directory.
+orca automatically handles each workspace's own output directory.
 
 ### Global Dependencies
 
@@ -330,7 +330,7 @@ When these files change:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**"],
@@ -360,7 +360,7 @@ When these files change:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "compile": {
       "outputs": ["lib/**", "dist/**"],
       "inputs": ["src/**", "tsconfig.json"]
@@ -385,7 +385,7 @@ When these files change:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "generate": {
       "outputs": ["src/generated/**"],
       "inputs": ["schema/**", "gql/**"]
@@ -424,7 +424,7 @@ When these files change:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "prebuild": {
       "outputs": ["generated/**"]
     },
@@ -517,7 +517,7 @@ Instead of relying on defaults.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"],
       "inputs": ["src/**"],
@@ -532,10 +532,10 @@ Instead of relying on defaults.
 
 ```bash
 # Check for common issues
-npx @fasunle/bun-cache validate
+npx @fasunle/orca validate
 
 # Or manually test
-bun-cache run build --verbose
+orca run build --verbose
 ```
 
 ## Troubleshooting Configuration
@@ -546,7 +546,7 @@ bun-cache run build --verbose
 
 1. `outputs` defined?
 2. Files actually created in output folder?
-3. Cache directory exists: `ls node_modules/.bun-cache`
+3. Cache directory exists: `ls .orca`
 
 ### Tasks Running Sequentially When They Should Be Parallel
 
@@ -578,19 +578,19 @@ ls apps/web/dist/
 ls packages/utils/dist/
 
 # Check cache
-ls node_modules/.bun-cache/
+ls .orca/
 ```
 
-## Migration from Turbo
+## Migration from Orca
 
-bun-cache uses the same `turbo.json` format, so migration is simple!
+orca uses the same `orca.json` format, so migration is simple!
 
-### Convert Turbo Config
+### Convert Orca Config
 
 ```json
 {
-  "turbo": {
-    "pipeline": { ... }
+  "orca": {
+    "tasks": { ... }
   }
 }
 ```
@@ -599,7 +599,7 @@ Change to:
 
 ```json
 {
-  "pipeline": { ... }
+  "tasks": { ... }
 }
 ```
 
@@ -609,7 +609,7 @@ That's it! Most configs work as-is.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "taskName": {
       "dependsOn": ["^taskName"], // String array
       "outputs": ["dist/**"], // Glob patterns

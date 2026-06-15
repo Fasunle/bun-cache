@@ -1,10 +1,10 @@
 # Migration Guide
 
-Guide for migrating to `@fasunle/bun-cache` from other build systems.
+Guide for migrating to `@fasunle/orca` from other build systems.
 
 ## Table of Contents
 
-- [From Turbo](#from-turbo)
+- [From Orca](#from-orca)
 - [From npm workspaces scripts](#from-npm-workspaces-scripts)
 - [From Lerna](#from-lerna)
 - [From Rush](#from-rush)
@@ -13,27 +13,27 @@ Guide for migrating to `@fasunle/bun-cache` from other build systems.
 
 ---
 
-## From Turbo
+## From Orca
 
 ### Compatibility
 
-bun-cache uses the **same `turbo.json` format** as Turbo, so migration is very simple!
+orca uses the **same `orca.json` format** as Orca, so migration is very simple!
 
-### Step 1: Install bun-cache
+### Step 1: Install orca
 
 ```bash
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 # or
-npm install --save-dev @fasunle/bun-cache
+npm install --save-dev @fasunle/orca
 ```
 
-### Step 2: Keep your turbo.json
+### Step 2: Keep your orca.json
 
-No changes needed! Your existing `turbo.json` works as-is.
+No changes needed! Your existing `orca.json` works as-is.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -44,16 +44,16 @@ No changes needed! Your existing `turbo.json` works as-is.
 
 ### Step 3: Update package.json scripts
 
-Replace `turbo` with `bun-cache`:
+Replace `orca` with `orca`:
 
 **Before:**
 
 ```json
 {
   "scripts": {
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "dev": "turbo run dev"
+    "build": "orca run build",
+    "test": "orca run test",
+    "dev": "orca run dev"
   }
 }
 ```
@@ -63,41 +63,41 @@ Replace `turbo` with `bun-cache`:
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build",
-    "test": "bun-cache run test",
-    "dev": "bun-cache run dev"
+    "build": "orca run build",
+    "test": "orca run test",
+    "dev": "orca run dev"
   }
 }
 ```
 
 ### Step 4: Update CI/CD
 
-Replace turbo in GitHub Actions:
+Replace orca in GitHub Actions:
 
 **Before:**
 
 ```yaml
 - name: Build
-  run: npx turbo run build
+  run: npx orca run build
 ```
 
 **After:**
 
 ```yaml
 - name: Build
-  run: npm install -g @fasunle/bun-cache && bun-cache run build
+  run: npm install -g @fasunle/orca && orca run build
 ```
 
 ### What's the same?
 
-✅ `turbo.json` format  
+✅ `orca.json` format  
 ✅ Task configuration (dependsOn, outputs, cache)  
 ✅ Caching behavior  
 ✅ Execution order
 
 ### What's different?
 
-- bun-cache is smaller and faster
+- orca is smaller and faster
 - Focused specifically on caching
 - Simpler command interface
 - Better with Bun runtime
@@ -122,11 +122,11 @@ If you're using npm workspaces with manual scripts:
 }
 ```
 
-### Step 1: Create turbo.json
+### Step 1: Create orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -135,10 +135,10 @@ If you're using npm workspaces with manual scripts:
 }
 ```
 
-### Step 2: Install bun-cache
+### Step 2: Install orca
 
 ```bash
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 ```
 
 ### Step 3: Replace scripts
@@ -158,7 +158,7 @@ npm install -g @fasunle/bun-cache
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build"
+    "build": "orca run build"
   }
 }
 ```
@@ -185,7 +185,7 @@ npm -w apps/web run build        # Must wait for ui
 **After:**
 
 ```bash
-bun-cache run build
+orca run build
 # Automatically handles dependency order & parallelization
 ```
 
@@ -197,9 +197,9 @@ bun-cache run build
 
 ## From Lerna
 
-### Lerna to bun-cache
+### Lerna to orca
 
-Lerna manages versioning and publishing. bun-cache focuses on caching.
+Lerna manages versioning and publishing. orca focuses on caching.
 
 ### Step 1: Keep Lerna for versioning
 
@@ -211,7 +211,7 @@ If you use Lerna for:
 
 Keep those in Lerna.
 
-### Step 2: Replace Lerna scripts with bun-cache
+### Step 2: Replace Lerna scripts with orca
 
 Lerna config:
 
@@ -232,17 +232,17 @@ Add to root `package.json`:
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build",
-    "test": "bun-cache run test"
+    "build": "orca run build",
+    "test": "orca run test"
   }
 }
 ```
 
-### Step 3: Create turbo.json
+### Step 3: Create orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -257,14 +257,14 @@ Add to root `package.json`:
 
 ### Step 4: Update CI/CD
 
-Add bun-cache before Lerna publish:
+Add orca before Lerna publish:
 
 ```yaml
 - name: Build
-  run: bun-cache run build
+  run: orca run build
 
 - name: Test
-  run: bun-cache run test
+  run: orca run test
 
 - name: Publish
   run: lerna publish from-package
@@ -272,14 +272,14 @@ Add bun-cache before Lerna publish:
 
 ### Hybrid setup
 
-Keep Lerna + add bun-cache:
+Keep Lerna + add orca:
 
 ```bash
 # Build with caching
-bun-cache run build
+orca run build
 
 # Test with caching
-bun-cache run test
+orca run test
 
 # Publish with Lerna
 lerna publish
@@ -293,7 +293,7 @@ lerna publish
 
 ## From Rush
 
-### Rush to bun-cache
+### Rush to orca
 
 Rush provides:
 
@@ -301,7 +301,7 @@ Rush provides:
 - Dependency resolution
 - Change detection
 
-bun-cache adds caching layer.
+orca adds caching layer.
 
 ### Step 1: Understand your rush.json
 
@@ -316,9 +316,9 @@ bun-cache adds caching layer.
 }
 ```
 
-### Step 2: Create turbo.json
+### Step 2: Create orca.json
 
-Translate Rush commands to turbo.json:
+Translate Rush commands to orca.json:
 
 **Before (rush.json):**
 
@@ -337,11 +337,11 @@ Translate Rush commands to turbo.json:
 }
 ```
 
-**After (turbo.json):**
+**After (orca.json):**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -356,7 +356,7 @@ Translate Rush commands to turbo.json:
 
 ### Step 3: Migrate commands
 
-Replace Rush commands with bun-cache:
+Replace Rush commands with orca:
 
 **Before:**
 
@@ -369,9 +369,9 @@ rush rebuild
 **After:**
 
 ```bash
-bun-cache run build
-bun-cache run test
-bun-cache clean && bun-cache run build
+orca run build
+orca run test
+orca clean && orca run build
 ```
 
 ### Step 4: Update package scripts
@@ -379,14 +379,14 @@ bun-cache clean && bun-cache run build
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build",
-    "test": "bun-cache run test",
-    "clean": "bun-cache clean"
+    "build": "orca run build",
+    "test": "orca run test",
+    "clean": "orca clean"
   }
 }
 ```
 
-### Why bun-cache with Rush?
+### Why orca with Rush?
 
 - Caching layer (faster rebuilds)
 - Simpler configuration
@@ -430,11 +430,11 @@ test:
   apps/web → build
 ```
 
-### Step 2: Create turbo.json
+### Step 2: Create orca.json
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "lib/**"],
@@ -471,8 +471,8 @@ test:
 ```json
 {
   "scripts": {
-    "build": "bun-cache run build",
-    "test": "bun-cache run test"
+    "build": "orca run build",
+    "test": "orca run test"
   }
 }
 ```
@@ -504,20 +504,20 @@ npm run build
 
 ## Troubleshooting migration
 
-### Issue: "turbo.json not found"
+### Issue: "orca.json not found"
 
 **Solution:**
-Create turbo.json in project root:
+Create orca.json in project root:
 
 ```bash
-touch turbo.json
+touch orca.json
 ```
 
 Add basic config:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     }
@@ -570,10 +570,10 @@ Make sure independent tasks don't have dependencies:
 npm -w packages/ui run build
 ```
 
-**To:** bun-cache (package-agnostic):
+**To:** orca (package-agnostic):
 
 ```bash
-bun-cache run build apps/ui
+orca run build apps/ui
 ```
 
 ### Issue: Environment-specific configuration
@@ -581,8 +581,8 @@ bun-cache run build apps/ui
 If you have environment-specific builds, use shell variables:
 
 ```bash
-NODE_ENV=production bun-cache run build
-NODE_ENV=development bun-cache run build
+NODE_ENV=production orca run build
+NODE_ENV=development orca run build
 ```
 
 ### Issue: Custom build outputs
@@ -601,11 +601,11 @@ If your scripts create multiple output locations:
 
 ## Post-Migration Checklist
 
-- [ ] Installed bun-cache globally or locally
-- [ ] Created/updated turbo.json
+- [ ] Installed orca globally or locally
+- [ ] Created/updated orca.json
 - [ ] Updated package.json scripts
 - [ ] Updated CI/CD configuration
-- [ ] Tested locally: `bun-cache run build`
+- [ ] Tested locally: `orca run build`
 - [ ] Tested caching: Run twice, verify cache hit
 - [ ] Updated team documentation
 - [ ] Committed changes to git
@@ -631,7 +631,7 @@ If your scripts create multiple output locations:
 Typical monorepo (6 services, 4 packages):
 
 ```
-Before: Each build runs full pipeline = 50s
+Before: Each build runs full tasks = 50s
 After:  First CI/CD = 50s, Subsequent = 0.8s
 
 Monthly savings (100 CI runs):
@@ -649,7 +649,7 @@ If migration issues arise:
 1. **Check FAQ:** [FAQ.md](./FAQ.md)
 2. **Review examples:** [EXAMPLES.md](./EXAMPLES.md)
 3. **Read documentation:** [CONFIGURATION.md](./CONFIGURATION.md)
-4. **Open GitHub issue:** [GitHub Issues](https://github.com/fasunle/bun-cache/issues)
+4. **Open GitHub issue:** [GitHub Issues](https://github.com/fasunle/orca/issues)
 
 ---
 
@@ -662,10 +662,10 @@ If you need to rollback to your previous setup:
 git log --oneline package.json
 
 # 2. Revert if needed
-git checkout <commit> -- package.json turbo.json
+git checkout <commit> -- package.json orca.json
 
 # 3. Reinstall your previous tool
-npm install -g turbo  # or lerna, rush, etc.
+npm install -g orca  # or lerna, rush, etc.
 ```
 
 ---

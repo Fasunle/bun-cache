@@ -1,21 +1,21 @@
-# @fasunle/bun-cache
+# @fasunle/orca
 
-> **Local caching for monorepos using Bun** - A Turbo-inspired task orchestrator with zero-config caching, optimized for Bun workspaces.
+> **Local caching for monorepos using Bun** - A Orca-inspired task orchestrator with zero-config caching, optimized for Bun workspaces.
 
-[![npm version](https://badge.fury.io/js/%40fasunle%2Fbun-cache.svg)](https://www.npmjs.com/package/@fasunle/bun-cache)
-[![GitHub Actions Test](https://github.com/fasunle/bun-cache/workflows/Test/badge.svg)](https://github.com/fasunle/bun-cache/actions)
-[![GitHub Actions Publish](https://github.com/fasunle/bun-cache/workflows/Publish/badge.svg)](https://github.com/fasunle/bun-cache/actions)
+[![npm version](https://badge.fury.io/js/%40fasunle%2Forca.svg)](https://www.npmjs.com/package/@fasunle/orca)
+[![GitHub Actions Test](https://github.com/fasunle/orca/workflows/Test/badge.svg)](https://github.com/fasunle/orca/actions)
+[![GitHub Actions Publish](https://github.com/fasunle/orca/workflows/Publish/badge.svg)](https://github.com/fasunle/orca/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ⚡ Overview
 
-`@fasunle/bun-cache` is a powerful task orchestrator and build cache manager for monorepos. It dramatically speeds up your build process by:
+`@fasunle/orca` is a powerful task orchestrator and build cache manager for monorepos. It dramatically speeds up your build process by:
 
 - **🎯 Intelligent Caching** - Never rebuild the same code twice
 - **⚙️ Smart Dependency Management** - Execute tasks in optimal order
 - **🚀 Parallel Execution** - Run independent tasks concurrently
 - **📦 Bun-First** - Built for and optimized with Bun
-- **🔧 Zero Config** - Works with standard `turbo.json`
+- **🔧 Zero Config** - Works with standard `orca.json`
 - **⚡ Lightning Fast** - ~100ms cache hits vs 5+ seconds for rebuilds
 
 ## 🚀 Quick Start
@@ -24,38 +24,38 @@
 
 ```bash
 # Global installation (recommended)
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 
 # Or local to project
-npm install --save-dev @fasunle/bun-cache
+npm install --save-dev @fasunle/orca
 
 # Or with Bun
-bun install -g @fasunle/bun-cache
+bun install -g @fasunle/orca
 ```
 
 ### Basic Usage
 
 ```bash
 # Run a task across all workspaces
-bun-cache run build
+orca run build
 
 # Run for specific workspaces
-bun-cache run build apps/web apps/api
+orca run build apps/web apps/api
 
 # Run tests
-bun-cache run test
+orca run test
 
 # Clear cache
-bun-cache clean
+orca clean
 ```
 
 ### Setup (30 seconds)
 
-1. **Create `turbo.json` in your monorepo root:**
+1. **Create `orca.json` in your monorepo root:**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
@@ -72,7 +72,7 @@ bun-cache clean
 2. **Run your first command:**
 
 ```bash
-bun-cache run build
+orca run build
 ```
 
 That's it! 🎉
@@ -80,7 +80,7 @@ That's it! 🎉
 ## 📚 Documentation
 
 - 📖 [Installation Guide](./INSTALL_GUIDE.md) - Detailed setup for different environments
-- 🔧 [Configuration Guide](./CONFIGURATION.md) - Complete turbo.json reference
+- 🔧 [Configuration Guide](./CONFIGURATION.md) - Complete orca.json reference
 - 📋 [Use Cases & Examples](./EXAMPLES.md) - Real-world scenarios
 - 🚀 [CI/CD Setup](./CI_CD_SETUP.md) - GitHub Actions deployment
 - 🧪 [Testing Guide](./TESTING.md) - Running and writing tests
@@ -93,12 +93,12 @@ Caches task outputs and only rebuilds when inputs change.
 
 ```bash
 # First run: 5 seconds
-$ bun-cache run build
+$ orca run build
 ⚙️  Executing: apps/web:build
 ✓ Completed: apps/web:build (5234ms)
 
 # Second run: ~100ms (cache hit!)
-$ bun-cache run build
+$ orca run build
 ✓ Cache hit: apps/web:build
 ```
 
@@ -108,7 +108,7 @@ Automatically handles task dependencies across workspaces.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"] // Wait for dependencies first
     }
@@ -128,7 +128,7 @@ With cache:  all from cache = ~0.3s
 
 ### 4. Zero Configuration
 
-Works out of the box with standard `turbo.json` format.
+Works out of the box with standard `orca.json` format.
 
 ## 🎯 Configuration
 
@@ -136,7 +136,7 @@ Works out of the box with standard `turbo.json` format.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     }
@@ -148,7 +148,7 @@ Works out of the box with standard `turbo.json` format.
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
@@ -182,7 +182,7 @@ Works out of the box with standard `turbo.json` format.
 ```
 project-root/
 ├── package.json              # Declares workspaces
-├── turbo.json                # Task configuration ← You create this
+├── orca.json                # Task configuration ← You create this
 ├── tsconfig.json             # Shared config
 ├── apps/
 │   ├── web/                  # React app
@@ -209,7 +209,7 @@ project-root/
 ### 1. Analyze
 
 ```
-Reads turbo.json configuration
+Reads orca.json configuration
 ↓
 Discovers all workspaces
 ↓
@@ -266,14 +266,14 @@ monorepo/
 ├── apps/mobile/
 ├── packages/ui/
 ├── packages/utils/
-└── turbo.json
+└── orca.json
 ```
 
-**turbo.json:**
+**orca.json:**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**"],
@@ -297,16 +297,16 @@ monorepo/
 
 ```bash
 # Build everything (first time: ~30s)
-bun-cache run build
+orca run build
 
 # Build again (cache hit: ~0.5s)
-bun-cache run build
+orca run build
 
 # Run tests
-bun-cache run test
+orca run test
 
 # Development (cache disabled)
-bun-cache run dev
+orca run dev
 ```
 
 ### Example 2: Node.js Backend Monorepo
@@ -320,14 +320,14 @@ backend/
 ├── services/queue/
 ├── packages/db/
 ├── packages/types/
-└── turbo.json
+└── orca.json
 ```
 
-**turbo.json:**
+**orca.json:**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "compile": {
       "outputs": ["lib/**", "dist/**"],
       "inputs": ["src/**", "tsconfig.json"]
@@ -355,7 +355,7 @@ backend/
 
 ```bash
 # Local development
-$ bun-cache run build
+$ orca run build
 ⚙️  Executing: packages/types:compile
 ✓ Completed: packages/types:compile (2s)
 ⚙️  Executing: packages/db:compile
@@ -366,7 +366,7 @@ $ bun-cache run build
 ✓ Completed: services/api:build (5s)
 
 # Run tests
-$ bun-cache run test
+$ orca run test
 ✓ Cache hit: packages/types:compile
 ✓ Cache hit: packages/db:compile
 ✓ Executing: packages/types:test
@@ -392,14 +392,14 @@ fullstack/
 │   ├── types/         # TypeScript types
 │   ├── utils/         # Utility functions
 │   └── database/      # Database layer
-└── turbo.json
+└── orca.json
 ```
 
-**turbo.json:**
+**orca.json:**
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "generate": {
       "outputs": ["src/generated/**"]
     },
@@ -427,10 +427,10 @@ fullstack/
 
 ```bash
 # In GitHub Actions
-$ bun-cache run lint      # ~5s (no cache needed)
-$ bun-cache run type-check # ~10s
-$ bun-cache run build      # ~15s or ~0.5s if cached
-$ bun-cache run test       # ~20s
+$ orca run lint      # ~5s (no cache needed)
+$ orca run type-check # ~10s
+$ orca run build      # ~15s or ~0.5s if cached
+$ orca run test       # ~20s
 ```
 
 ## 📊 Performance Benchmarks
@@ -464,7 +464,7 @@ Real-world measurements from a typical monorepo:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "deploy": {
       "dependsOn": ["build", "test", "api#build", "web#build"]
     }
@@ -476,7 +476,7 @@ Real-world measurements from a typical monorepo:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "cache": true
     },
@@ -496,7 +496,7 @@ Specify which files invalidate the cache:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "inputs": ["src/**", "package.json", "tsconfig.json", "webpack.config.js"]
     }
@@ -548,12 +548,12 @@ cat > packages/utils/package.json << 'EOF'
 EOF
 ```
 
-**Step 3:** Create turbo.json
+**Step 3:** Create orca.json
 
 ```bash
-cat > turbo.json << 'EOF'
+cat > orca.json << 'EOF'
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -567,7 +567,7 @@ EOF
 
 ```bash
 bun install
-bun-cache run build
+orca run build
 
 # Output:
 # ⚙️  Executing: packages/utils:build
@@ -592,8 +592,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - run: bun install
-      - run: bun-cache run build
-      - run: bun-cache run test
+      - run: orca run build
+      - run: orca run test
 ```
 
 **Step 2:** Push to GitHub
@@ -610,9 +610,9 @@ Go to GitHub → Actions → See your build running!
 
 ## ❓ FAQ
 
-**Q: How is this different from Turbo?**
+**Q: How is this different from Orca?**
 
-A: Turbo is a general monorepo tool. bun-cache is specifically optimized for Bun with simpler setup and faster caching for Bun projects.
+A: Orca is a general monorepo tool. orca is specifically optimized for Bun with simpler setup and faster caching for Bun projects.
 
 **Q: Can I use it without Bun?**
 
@@ -627,7 +627,7 @@ A: Yes, it detects and works with pnpm/npm/yarn workspaces.
 A: Run with verbose logging:
 
 ```bash
-bun-cache run build --verbose
+orca run build --verbose
 ```
 
 **Q: Can I skip cache for a run?**
@@ -635,24 +635,24 @@ bun-cache run build --verbose
 A: Yes:
 
 ```bash
-bun-cache run build --no-cache
+orca run build --no-cache
 ```
 
 **Q: Where is cache stored?**
 
-A: In `node_modules/.bun-cache/`
+A: In `.orca/`
 
 **Q: Is it safe to delete cache?**
 
-A: Yes, just run `bun-cache clean`
+A: Yes, just run `orca clean`
 
 ## 🐛 Troubleshooting
 
 ### Cache not working
 
-1. Check `turbo.json` exists in root
+1. Check `orca.json` exists in root
 2. Verify `outputs` are defined
-3. Run `bun-cache clean` and retry
+3. Run `orca clean` and retry
 4. Check file permissions in `node_modules/`
 
 ### Build fails but works without cache
@@ -667,7 +667,7 @@ A: Yes, just run `bun-cache clean`
 1. Run with verbose logging
 2. Check network I/O if using shared cache
 3. Verify SSD usage (cache on HDD is slower)
-4. Profile with: `time bun-cache run build`
+4. Profile with: `time orca run build`
 
 ## 🤝 Contributing
 
@@ -679,17 +679,17 @@ MIT © 2024 Kehinde Fasunle
 
 ## 🔗 Links
 
-- 📦 [NPM Package](https://www.npmjs.com/package/@fasunle/bun-cache)
-- 🐙 [GitHub Repository](https://github.com/fasunle/bun-cache)
-- 💬 [Discussions](https://github.com/fasunle/bun-cache/discussions)
-- 🐛 [Issues](https://github.com/fasunle/bun-cache/issues)
+- 📦 [NPM Package](https://www.npmjs.com/package/@fasunle/orca)
+- 🐙 [GitHub Repository](https://github.com/fasunle/orca)
+- 💬 [Discussions](https://github.com/fasunle/orca/discussions)
+- 🐛 [Issues](https://github.com/fasunle/orca/issues)
 
 ## 🙏 Acknowledgments
 
-Inspired by [Turbo](https://turbo.build/) - the ultimate monorepo management tool.
+Inspired by [Orca](https://orca.build/) - the ultimate monorepo management tool.
 
 ---
 
 **Built with ❤️ by Kehinde Fasunle**
 
-**[⬆ back to top](#-fasunlebun-cache)**
+**[⬆ back to top](#-fasunleorca)**

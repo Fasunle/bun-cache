@@ -1,6 +1,6 @@
 # FAQ & Troubleshooting
 
-Common questions and solutions for `@fasunle/bun-cache`.
+Common questions and solutions for `@fasunle/orca`.
 
 ## Table of Contents
 
@@ -16,19 +16,19 @@ Common questions and solutions for `@fasunle/bun-cache`.
 
 ## Installation & Setup
 
-### Q: How do I install @fasunle/bun-cache?
+### Q: How do I install @fasunle/orca?
 
 **A:** Three options:
 
 ```bash
 # Global installation (recommended)
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 
 # Local installation
-npm install --save-dev @fasunle/bun-cache
+npm install --save-dev @fasunle/orca
 
 # Bun installation
-bun install @fasunle/bun-cache
+bun install @fasunle/orca
 ```
 
 ### Q: What's the minimum Node.js version?
@@ -42,13 +42,13 @@ node --version   # Should be v18.x or higher
 bun --version    # Should be 1.0.0 or higher
 ```
 
-### Q: Do I need turbo.json to use bun-cache?
+### Q: Do I need orca.json to use orca?
 
-**A:** Yes. The `turbo.json` file defines your task pipeline. Create a minimal one:
+**A:** Yes. The `orca.json` file defines your task tasks. Create a minimal one:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     }
@@ -56,23 +56,23 @@ bun --version    # Should be 1.0.0 or higher
 }
 ```
 
-### Q: Can I use bun-cache with npm/yarn/pnpm?
+### Q: Can I use orca with npm/yarn/pnpm?
 
-**A:** Yes! bun-cache works with all package managers. It doesn't care which one you use.
+**A:** Yes! orca works with all package managers. It doesn't care which one you use.
 
-### Q: How do I update bun-cache?
+### Q: How do I update orca?
 
 **A:** Use your package manager:
 
 ```bash
 # npm
-npm update @fasunle/bun-cache -g
+npm update @fasunle/orca -g
 
 # Yarn
-yarn global upgrade @fasunle/bun-cache
+yarn global upgrade @fasunle/orca
 
 # Bun
-bun upgrade @fasunle/bun-cache
+bun upgrade @fasunle/orca
 ```
 
 ---
@@ -163,13 +163,13 @@ For monorepos with dependencies:
 
 When these change, all caches invalidate.
 
-### Q: Can I use environment variables in turbo.json?
+### Q: Can I use environment variables in orca.json?
 
 **A:** Not directly. Use shell expansion:
 
 ```bash
 # Pass via environment variable
-MY_VAR="value" bun-cache run build
+MY_VAR="value" orca run build
 ```
 
 ---
@@ -207,7 +207,7 @@ MY_VAR="value" bun-cache run build
 
 4. **Check cache directory:**
    ```bash
-   ls -la node_modules/.bun-cache/
+   ls -la .orca/
    # Should have cache files
    ```
 
@@ -257,19 +257,19 @@ MY_VAR="value" bun-cache run build
 1. **Cache directory exists:**
 
    ```bash
-   ls -la node_modules/.bun-cache/
+   ls -la .orca/
    ```
 
 2. **Output directory exists:**
 
    ```bash
    mkdir -p dist/
-   bun-cache run build
+   orca run build
    ```
 
 3. **Permissions:**
    ```bash
-   chmod +rw node_modules/.bun-cache/
+   chmod +rw .orca/
    ```
 
 ### Q: Different results on different machines
@@ -299,10 +299,10 @@ MY_VAR="value" bun-cache run build
 
 ```bash
 # Clear all
-bun-cache clean
+orca clean
 
 # Then rebuild
-bun-cache run build
+orca run build
 ```
 
 ---
@@ -327,7 +327,7 @@ bun-cache run build
 **A:** Use `--verbose`:
 
 ```bash
-bun-cache run build --verbose
+orca run build --verbose
 
 # Output:
 # ⚙️  Executing: packages/utils:build
@@ -342,7 +342,7 @@ bun-cache run build --verbose
 **A:** Look for cache hit indicators:
 
 ```bash
-$ bun-cache run build
+$ orca run build
 
 # Cache hits look like:
 ✓ Cache hit: packages/utils:build
@@ -359,10 +359,10 @@ $ bun-cache run build
 
 ```bash
 # Cache is stored in:
-node_modules/.bun-cache/
+.orca/
 
 # View cache size
-du -sh node_modules/.bun-cache/
+du -sh .orca/
 ```
 
 Typically 10-100MB for most projects.
@@ -394,16 +394,16 @@ Typically 10-100MB for most projects.
 
 ```bash
 # Run build in all workspaces
-bun-cache run build
+orca run build
 
 # Run build in specific workspace
-bun-cache run build apps/web
+orca run build apps/web
 
 # Run build in multiple workspaces
-bun-cache run build apps/web apps/mobile
+orca run build apps/web apps/mobile
 
 # Run in all matching pattern
-bun-cache run build apps/*
+orca run build apps/*
 ```
 
 ### Q: Can I see the dependency graph?
@@ -411,7 +411,7 @@ bun-cache run build apps/*
 **A:** Use `--verbose` to see execution order:
 
 ```bash
-bun-cache run build --verbose
+orca run build --verbose
 
 # Shows:
 # Layer 0 (parallel):
@@ -430,10 +430,10 @@ bun-cache run build --verbose
 
 ```bash
 # Run task with verbose output
-bun-cache run build --verbose
+orca run build --verbose
 
 # Run specific workspace
-bun-cache run build apps/web
+orca run build apps/web
 
 # Run underlying command directly
 cd apps/web && npm run build
@@ -445,13 +445,13 @@ cd apps/web && npm run build
 
 ```bash
 # Run test task in all workspaces
-bun-cache run test
+orca run test
 
 # Run in specific workspace
-bun-cache run test apps/web
+orca run test apps/web
 
 # With caching
-bun-cache run test  # Second time: cache hit!
+orca run test  # Second time: cache hit!
 ```
 
 ### Q: How do I handle parallel execution?
@@ -460,7 +460,7 @@ bun-cache run test  # Second time: cache hit!
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "lint": {
       "cache": false
     },
@@ -483,7 +483,7 @@ If both have no dependencies, they run in parallel.
 
 1. Create GitHub release
 2. GitHub Actions publishes to npm
-3. Package available at `npm.js.com/@fasunle/bun-cache`
+3. Package available at `npm.js.com/@fasunle/orca`
 
 Manual publishing:
 
@@ -515,11 +515,11 @@ Quick start:
 **A:** Yes! Install in CI:
 
 ```yaml
-- name: Install bun-cache
-  run: npm install -g @fasunle/bun-cache
+- name: Install orca
+  run: npm install -g @fasunle/orca
 
 - name: Build
-  run: bun-cache run build
+  run: orca run build
 ```
 
 ### Q: What about Docker?
@@ -529,12 +529,12 @@ Quick start:
 ```dockerfile
 FROM node:18-alpine
 
-RUN npm install -g @fasunle/bun-cache
+RUN npm install -g @fasunle/orca
 
 WORKDIR /app
 COPY . .
 RUN npm install
-RUN bun-cache run build
+RUN orca run build
 
 CMD ["node", "dist/server.js"]
 ```
@@ -543,14 +543,14 @@ CMD ["node", "dist/server.js"]
 
 ## Error Messages
 
-### Error: "turbo.json not found"
+### Error: "orca.json not found"
 
 **Solution:**
-Create turbo.json in project root:
+Create orca.json in project root:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"]
     }
@@ -558,14 +558,14 @@ Create turbo.json in project root:
 }
 ```
 
-### Error: "Task not found in pipeline"
+### Error: "Task not found in tasks"
 
 **Solution:**
-Add task to pipeline in turbo.json:
+Add task to tasks in orca.json:
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "my-task": {
       "outputs": ["dist/**"]
     }
@@ -584,7 +584,7 @@ Ensure package.json has workspaces:
 }
 ```
 
-Or use single workspace mode (root-level turbo.json).
+Or use single workspace mode (root-level orca.json).
 
 ### Error: "Permission denied" on cache directory
 
@@ -592,13 +592,13 @@ Or use single workspace mode (root-level turbo.json).
 Fix permissions:
 
 ```bash
-chmod -R +rw node_modules/.bun-cache/
+chmod -R +rw .orca/
 ```
 
 Or clear cache:
 
 ```bash
-bun-cache clean
+orca clean
 ```
 
 ### Error: "Circular dependency detected"
@@ -629,20 +629,20 @@ bun-cache clean
 }
 ```
 
-### Error: "Command not found: bun-cache"
+### Error: "Command not found: orca"
 
 **Solution:**
 
 ```bash
 # Install globally
-npm install -g @fasunle/bun-cache
+npm install -g @fasunle/orca
 
 # Or use npx
-npx @fasunle/bun-cache run build
+npx @fasunle/orca run build
 
 # Or use local installation
-npm install --save-dev @fasunle/bun-cache
-npx bun-cache run build
+npm install --save-dev @fasunle/orca
+npx orca run build
 ```
 
 ### Error: "ENOENT: no such file or directory"
@@ -660,7 +660,7 @@ npx bun-cache run build
 mkdir -p dist/
 
 # Then run task
-bun-cache run build
+orca run build
 ```
 
 ---
@@ -697,32 +697,32 @@ bun-cache run build
 # Cache dependencies
 npm ci --prefer-offline
 
-# Cache bun-cache
-bun-cache run build
+# Cache orca
+orca run build
 
 # Run tests in parallel
-bun-cache run test --parallel
+orca run test --parallel
 ```
 
 ### Debug Caching
 
 ```bash
 # See what's in cache
-ls -la node_modules/.bun-cache/
+ls -la .orca/
 
 # View cache metadata
-cat node_modules/.bun-cache/*.json | head -20
+cat .orca/*.json | head -20
 
 # Clear and rebuild
-bun-cache clean
-bun-cache run build --verbose
+orca clean
+orca run build --verbose
 ```
 
 ### Optimize Monorepo
 
 ```json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"], // Wait for deps
       "inputs": ["src/**"], // Specific inputs
@@ -741,17 +741,17 @@ bun-cache run build --verbose
 ```bash
 # Initial setup
 bun install
-bun-cache run build
-bun-cache run test
+orca run build
+orca run test
 
 # Development
 # (Edit code)
-bun-cache run build    # Uses cache
-bun-cache run test     # Uses cache
+orca run build    # Uses cache
+orca run test     # Uses cache
 
 # When you change shared packages
-bun-cache clean
-bun-cache run build
+orca clean
+orca run build
 ```
 
 ---

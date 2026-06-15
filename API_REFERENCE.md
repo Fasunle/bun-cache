@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API documentation for using `@fasunle/bun-cache` as a library.
+Complete API documentation for using `@fasunle/orca` as a library.
 
 ## Table of Contents
 
@@ -13,20 +13,20 @@ Complete API documentation for using `@fasunle/bun-cache` as a library.
 ## Installation
 
 ```bash
-npm install @fasunle/bun-cache
+npm install @fasunle/orca
 # or
-bun install @fasunle/bun-cache
+bun install @fasunle/orca
 ```
 
 ## Core Types
 
-### TurboConfig
+### OrcaConfig
 
 Main configuration interface:
 
 ```typescript
-interface TurboConfig {
-  pipeline: Record<string, PipelineTask>;
+interface OrcaConfig {
+  tasks: Record<string, PipelineTask>;
   globalDependencies?: string[];
 }
 ```
@@ -63,26 +63,26 @@ interface TaskExecution {
 
 ### loadConfig()
 
-Load turbo.json configuration:
+Load orca.json configuration:
 
 ```typescript
-import { loadConfig } from '@fasunle/bun-cache';
+import { loadConfig } from '@fasunle/orca';
 
 const config = await loadConfig('.');
-// Returns: TurboConfig
+// Returns: OrcaConfig
 ```
 
 **Parameters:**
 
 - `path` (string): Path to workspace root
 
-**Returns:** Promise<TurboConfig>
+**Returns:** Promise<OrcaConfig>
 
 **Example:**
 
 ```typescript
 const config = await loadConfig('.');
-console.log(config.pipeline);
+console.log(config.tasks);
 ```
 
 ---
@@ -92,7 +92,7 @@ console.log(config.pipeline);
 Create execution plan from configuration:
 
 ```typescript
-import { buildExecutionPlan } from '@fasunle/bun-cache';
+import { buildExecutionPlan } from '@fasunle/orca';
 
 const plan = await buildExecutionPlan('.', 'build', ['apps/web']);
 ```
@@ -124,7 +124,7 @@ console.log(plan.layers); // 2D array of parallel tasks
 Execute task graph:
 
 ```typescript
-import { executeGraphLayers } from '@fasunle/bun-cache';
+import { executeGraphLayers } from '@fasunle/orca';
 
 const results = await executeGraphLayers(plan, '.');
 ```
@@ -153,7 +153,7 @@ for (const [taskId, result] of results) {
 Generate cache hash for task:
 
 ```typescript
-import { generateTaskHash } from '@fasunle/bun-cache';
+import { generateTaskHash } from '@fasunle/orca';
 
 const hash = await generateTaskHash('build', 'apps/web', ['src/**']);
 ```
@@ -187,9 +187,9 @@ console.log(`Cache key: ${hash}`);
 Cache management class:
 
 ```typescript
-import { CacheManager } from '@fasunle/bun-cache';
+import { CacheManager } from '@fasunle/orca';
 
-const cache = new CacheManager('node_modules/.bun-cache');
+const cache = new CacheManager('.orca');
 
 // Get cached outputs
 const outputs = cache.get('hash123');
@@ -251,13 +251,13 @@ console.log('Cache cleared');
 ### Common Errors
 
 ```typescript
-import { loadConfig, buildExecutionPlan, executeGraphLayers } from '@fasunle/bun-cache';
+import { loadConfig, buildExecutionPlan, executeGraphLayers } from '@fasunle/orca';
 
 try {
   const config = await loadConfig('.');
 
-  if (!config.pipeline.build) {
-    throw new Error("'build' task not found in pipeline");
+  if (!config.tasks.build) {
+    throw new Error("'build' task not found in tasks");
   }
 
   const plan = await buildExecutionPlan('.', 'build');
@@ -273,10 +273,10 @@ try {
 
 ```typescript
 // Missing configuration
-Error: 'turbo.json not found';
+Error: 'orca.json not found';
 
 // Task not found
-Error: "Task 'build' not found in pipeline";
+Error: "Task 'build' not found in tasks";
 
 // Circular dependencies
 Error: 'Circular dependency detected: build -> compile -> build';
@@ -301,7 +301,7 @@ import {
   executeGraphLayers,
   CacheManager,
   generateTaskHash,
-} from '@fasunle/bun-cache';
+} from '@fasunle/orca';
 
 async function buildMonorepo() {
   try {
@@ -334,7 +334,7 @@ buildMonorepo();
 ### Programmatic Task Execution
 
 ```typescript
-import { buildExecutionPlan, executeGraphLayers } from '@fasunle/bun-cache';
+import { buildExecutionPlan, executeGraphLayers } from '@fasunle/orca';
 
 async function runTests() {
   const plan = await buildExecutionPlan('.', 'test', ['apps/web']);
@@ -359,17 +359,12 @@ async function runTests() {
 ### Custom Build Script
 
 ```typescript
-import {
-  loadConfig,
-  buildExecutionPlan,
-  executeGraphLayers,
-  CacheManager,
-} from '@fasunle/bun-cache';
+import { loadConfig, buildExecutionPlan, executeGraphLayers, CacheManager } from '@fasunle/orca';
 
 async function customBuild(taskName: string, targets?: string[]) {
   const config = await loadConfig('.');
 
-  if (!config.pipeline[taskName]) {
+  if (!config.tasks[taskName]) {
     throw new Error(`Task '${taskName}' not found`);
   }
 
@@ -402,13 +397,13 @@ await customBuild('build', ['apps/web', 'packages/ui']);
 ### Cache Statistics
 
 ```typescript
-import { CacheManager } from '@fasunle/bun-cache';
+import { CacheManager } from '@fasunle/orca';
 import { promises as fs } from 'fs';
 
 async function getCacheStats() {
-  const cache = new CacheManager('node_modules/.bun-cache');
+  const cache = new CacheManager('.orca');
 
-  const cacheDir = 'node_modules/.bun-cache';
+  const cacheDir = '.orca';
   const files = await fs.readdir(cacheDir);
 
   let totalSize = 0;
@@ -429,7 +424,7 @@ getCacheStats();
 ### Monitoring Task Execution
 
 ```typescript
-import { buildExecutionPlan, executeGraphLayers } from '@fasunle/bun-cache';
+import { buildExecutionPlan, executeGraphLayers } from '@fasunle/orca';
 
 async function monitorBuild() {
   const plan = await buildExecutionPlan('.', 'build');
@@ -465,7 +460,7 @@ monitorBuild();
 ### Dependency Analysis
 
 ```typescript
-import { loadConfig, buildExecutionPlan } from '@fasunle/bun-cache';
+import { loadConfig, buildExecutionPlan } from '@fasunle/orca';
 
 async function analyzeDependencies(task: string) {
   const plan = await buildExecutionPlan('.', task);
@@ -554,7 +549,7 @@ interface TaskResult {
 
    ```typescript
    const config = await loadConfig('.');
-   if (!config.pipeline.myTask) {
+   if (!config.tasks.myTask) {
      throw new Error('Task not found');
    }
    ```
@@ -570,7 +565,7 @@ interface TaskResult {
 4. **Clean cache periodically:**
 
    ```typescript
-   const cache = new CacheManager('node_modules/.bun-cache');
+   const cache = new CacheManager('.orca');
    cache.clean(); // For testing
    ```
 
