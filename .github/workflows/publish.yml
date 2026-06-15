@@ -17,6 +17,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -44,15 +46,67 @@ jobs:
             echo ""
             echo "---"
             echo ""
-            cat coverage-summary.md
+            cat coverage-summary.md 2>/dev/null || echo "No coverage summary available"
           } >> CHANGELOG.md
 
       - name: Build package
         run: bun run build
 
+      - name: Run Benchmarks
+        run: |
+          # Build benchmark specifically (if not included in main build)
+          bun build ./src/benchmark/index.ts --outdir ./dist --target node --format esm
+          bun run benchmark --verbose --output benchmark-results.json
+        env:
+          CI: true
+
+      - name: Generate Benchmark Report
+        run: |
+          echo "## Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          bun run benchmark --quick 2>&1 | head -50 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Benchmark Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: benchmark-results.json
+          retention-days: 30
+
+      - name: Comment on PR with Results
+        if: github.event_name == 'pull_request' && github.event.pull_request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Check if benchmark results exist
+            if (!fs.existsSync('benchmark-results.json')) {
+              console.log('No benchmark results found');
+              return;
+            }
+
+            const results = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf8'));
+
+            const comment = `## 📊 Benchmark Results\n\n` +
+              `**Performance Score:** ${results.cache?.readHit?.opsPerSecond || 'N/A'} ops/s\n` +
+              `**Cache Hit Rate:** ${results.cache?.readHit?.opsPerSecond || 'N/A'} ops/s\n` +
+              `**Stress Test Success Rate:** ${results.stress?.summary?.successRate || 'N/A'}%\n` +
+              `**Peak RPS:** ${results.stress?.throughput?.peakRPS || 'N/A'}\n` +
+              `**P95 Latency:** ${results.stress?.latency?.p95Ms || 'N/A'}ms\n\n` +
+              `_See workflow artifacts for full benchmark results._`;
+
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request?.number || context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
       - name: Setup npm registry authentication
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
           npm config set registry https://registry.npmjs.org/
 
       - name: Verify authentication
@@ -61,9 +115,11 @@ jobs:
       - name: Publish to npm
         run: |
           npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub release comment
-        if: always()
+        if: github.event_name == 'release' && success()
         uses: actions/github-script@v7
         with:
           script: |
@@ -73,20 +129,26 @@ jobs:
             const name = pkg.name;
             const npmUrl = `https://www.npmjs.com/package/${name}/v/${version}`;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `✅ Package published to npm!\n\n📦 **${name}@${version}**\n\n🔗 View on npm: [${npmUrl}](${npmUrl})`
-            }).catch(() => {
-              console.log('Not a PR context, skipping comment');
-            });
+            console.log(`✅ Successfully published ${name}@${version} to npm registry`);
+            console.log(`📦 View on npm: ${npmUrl}`);
 
-      - name: Notify deployment
+            // Add a comment to the release if possible
+            try {
+              const releaseId = context.payload.release?.id;
+              if (releaseId) {
+                await github.rest.repos.createRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: releaseId,
+                  body: `## 📦 Published to npm\n\n**Version:** ${version}\n**Package:** ${name}\n**View on npm:** [${npmUrl}](${npmUrl})\n\n## 📊 Benchmark Results\n\nSee workflow artifacts for detailed benchmark results.`
+                });
+              }
+            } catch (error) {
+              console.log('Could not update release body:', error.message);
+            }
+
+      - name: Notify deployment success
         if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
-            console.log(`✅ Successfully published ${pkg.name}@${pkg.version} to npm registry`);
+        run: |
+          pkg_version=$(node -p "require('./package.json').version")
+          echo "✅ Successfully published @fasunle/orca@${pkg_version} to npm registry"

@@ -5,10 +5,12 @@
   "type": "module",
   "main": "./dist/cli.js",
   "exports": {
-    ".": "./dist/cli.js"
+    ".": "./dist/cli.js",
+    "./benchmark": "./dist/benchmark/index.js"
   },
   "bin": {
-    "orca": "./dist/cli.js"
+    "orca": "./dist/cli.js",
+    "orca-benchmark": "./dist/benchmark/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,15 +32,20 @@
     "turbo",
     "turbo alternative"
   ],
-  "author": "Kehinde Fasunle<kfasunle@gmail.com>",
+  "author": "Kehinde Fasunle <kfasunle@gmail.com>",
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
   "scripts": {
-    "build": "bun build ./src/cli.ts --outdir ./dist --target node",
+    "build": "bun build ./src/cli.ts ./src/benchmark/index.ts --outdir ./dist --target node --split-modules",
     "dev": "bun run ./src/cli.ts",
+    "benchmark": "bun run ./dist/benchmark/index.js",
+    "benchmark:stress": "bun run ./dist/benchmark/index.js --stress-only",
+    "benchmark:cache": "bun run ./dist/benchmark/index.js --cache-only",
+    "benchmark:parallel": "bun run ./dist/benchmark/index.js --parallel-only",
+    "benchmark:quick": "bun run ./dist/benchmark/index.js --quick",
     "format": "prettier --write .",
     "test": "vitest",
     "test:run": "vitest run",
@@ -50,17 +57,26 @@
     "version:major": "npm version major",
     "publish-packages": "npm publish --access public"
   },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^15.0.0",
+    "node-cache": "^5.1.2",
+    "pidusage": "^3.0.2",
+    "workerpool": "^6.5.1"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "@types/pidusage": "^2.0.5",
+    "@types/workerpool": "^6.4.5",
     "@vitest/coverage-v8": "4.1.8",
     "@vitest/ui": "latest",
     "bun-types": "latest",
     "prettier": "^3.8.4",
+    "rimraf": "^6.1.3",
     "vitest": "latest"
   },
   "peerDependencies": {
-    "rimraf": "^6.1.3",
-    "chalk": "^5.6.2",
-    "commander": "^15.0.0"
+    "cli-table3": "^0.6.5",
+    "rimraf": "^6.1.3"
   }
 }
