@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CacheManager } from '../src/cache';
-import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from 'fs';
+import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync, promises } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
@@ -118,18 +118,36 @@ describe('CacheManager', () => {
       expect(existsSync(metaPath)).toBe(true);
     });
 
-    it('should return false when cached outputs are missing', () => {
+    it('should return false when cached outputs are missing', async () => {
       // Create and cache
       const outDir = join(testDir, 'dist');
-      mkdirSync(outDir, { recursive: true });
-      writeFileSync(join(outDir, 'index.js'), 'built');
+      await promises.mkdir(outDir, { recursive: true });
+      const outputFile = join(outDir, 'index.js');
+      await promises.writeFile(outputFile, 'built');
 
       const outputs = ['dist/index.js'];
       cacheManager.save('missing-out-hash', outputs, testDir);
 
       // Remove the output file
-      rmSync(join(outDir, 'index.js'));
+      await promises.rm(outputFile, { force: true });
 
+      // Ensure file is actually deleted (critical for CI)
+      let fileExists = true;
+      for (let i = 0; i < 10; i++) {
+        try {
+          await promises.access(outputFile);
+          fileExists = true;
+          // Small delay before checking again
+          await new Promise(resolve => setTimeout(resolve, 10));
+        } catch {
+          fileExists = false;
+          break;
+        }
+      }
+
+      expect(fileExists).toBe(false);
+
+      // Now check cache
       const result = cacheManager.get('missing-out-hash');
       expect(result).toBe(false);
     });
