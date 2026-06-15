@@ -283,7 +283,7 @@ MIT
 
 ## 🙏 Acknowledgments
 
-Inspired by [Orca](https://orca.build/) - Task orchestration and monorepo management.
+Inspired by [Turbo](https://turbo.dev/) - Task orchestration and monorepo management.
 
 ---
 

@@ -675,7 +675,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## 📝 License
 
-MIT © 2024 Kehinde Fasunle
+MIT © 2026 Kehinde Fasunle
 
 ## 🔗 Links
 
@@ -686,7 +686,7 @@ MIT © 2024 Kehinde Fasunle
 
 ## 🙏 Acknowledgments
 
-Inspired by [Orca](https://orca.build/) - the ultimate monorepo management tool.
+Inspired by [Turbo](https://turbo.dev/) - the ultimate monorepo management tool.
 
 ---
 
