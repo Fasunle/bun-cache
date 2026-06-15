@@ -1,6 +1,6 @@
 {
   "name": "@fasunle/bun-cache",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local caching for monorepos using Bun - Turbo-inspired task orchestrator with zero-config caching",
   "type": "module",
   "main": "./dist/cli.js",

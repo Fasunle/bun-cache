@@ -1,7 +1,7 @@
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { spawn } from 'child_process';
-import type { TurboConfig, TaskExecution, PipelineTask } from './types';
+import type { TurboConfig, PipelineTask } from './types';
 import { Hasher } from './hasher';
 import { CacheManager } from './cache';
 
@@ -42,8 +42,23 @@ export class Orchestrator {
     this.workspaces = this.expandWorkspaces(pkg.workspaces || []);
   }
 
+  async getWorkspaces(targets?: string[]): Promise<string[]> {
+    const workspaces = new Set(this.workspaces);
+
+    // If targets are specified, filter workspaces to only those that match
+    if (targets && targets.length > 0) {
+      for (const target of targets) {
+        if (!workspaces.has(target)) {
+          console.warn(`⚠️  Target "${target}" not found in workspaces`);
+        }
+      }
+      return targets.filter(t => workspaces.has(t));
+    }
+    return this.workspaces;
+  }
+
   async run(taskName: string, targets?: string[]): Promise<void> {
-    const toRun = targets || this.workspaces;
+    const toRun = await this.getWorkspaces(targets);
 
     // Validate task exists
     if (!this.config.pipeline[taskName]) {
@@ -252,11 +267,18 @@ export class Orchestrator {
 
   private async runCommand(workspace: string, command: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      const [cmd, ...args] = command.split(' ');
-      const proc = spawn(cmd!, args, {
-        cwd: join(this.rootDir, workspace),
+      const workspacePath = join(this.rootDir, workspace);
+      const pathSeparator = process.platform === 'win32' ? ';' : ':';
+      const env = {
+        ...process.env,
+        PATH: [join(workspacePath, 'node_modules', '.bin'), process.env.PATH].join(pathSeparator),
+      };
+
+      const proc = spawn(command, {
+        cwd: workspacePath,
         stdio: 'inherit',
         shell: true,
+        env,
       });
 
       proc.on('close', code => {
@@ -289,13 +311,35 @@ export class Orchestrator {
   }
 
   private expandWorkspaces(patterns: string[]): string[] {
-    // Simple glob expansion - you can improve this
     const workspaces: string[] = [];
+
     for (const pattern of patterns) {
-      const base = pattern.replace('/*', '');
-      // This is simplified - use glob library in production
-      workspaces.push(...['apps', 'packages'].map(dir => `${dir}/*`));
+      // Handle glob patterns like "apps/*" or "packages/*"
+      if (pattern.includes('*')) {
+        const parts = pattern.split('/');
+        const dir = parts?.[0] || '';
+        const dirPath = join(this.rootDir, dir);
+
+        if (existsSync(dirPath)) {
+          try {
+            const entries = readdirSync(dirPath, { withFileTypes: true });
+            for (const entry of entries) {
+              if (entry.isDirectory()) {
+                workspaces.push(join(dir, entry.name));
+              }
+            }
+          } catch (error) {
+            // Directory doesn't exist or can't be read, skip
+          }
+        }
+      } else {
+        // Handle exact paths
+        if (existsSync(join(this.rootDir, pattern))) {
+          workspaces.push(pattern);
+        }
+      }
     }
+
     return workspaces;
   }
 }
